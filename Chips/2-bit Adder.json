@@ -1,0 +1,261 @@
+{
+  "DLSVersion": "2.1.9",
+  "Name": "2-bit Adder",
+  "NameLocation": 0,
+  "ChipType": 0,
+  "Size": {
+    "x": 1.025,
+    "y": 1.25
+  },
+  "Colour": {
+    "r": 0.9487748,
+    "g": 0.7541881,
+    "b": 0.9357158,
+    "a": 1
+  },
+  "InputPins":[
+    {
+      "Name":"IN A1 ",
+      "ID":1184034389,
+      "Position":{
+        "x":-3.0,
+        "y":1.9375
+      },
+      "BitCount":1,
+      "Colour":1,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"IN A2",
+      "ID":4292492,
+      "Position":{
+        "x":-3.0,
+        "y":1.4375
+      },
+      "BitCount":1,
+      "Colour":2,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"IN B1",
+      "ID":231381816,
+      "Position":{
+        "x":-3.0,
+        "y":-0.0625
+      },
+      "BitCount":1,
+      "Colour":3,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"IN B2",
+      "ID":835580252,
+      "Position":{
+        "x":-3.0,
+        "y":-0.5625
+      },
+      "BitCount":1,
+      "Colour":4,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"Carry IN",
+      "ID":1191567408,
+      "Position":{
+        "x":-3.0,
+        "y":-1.8125
+      },
+      "BitCount":1,
+      "Colour":0,
+      "ValueDisplayMode":0
+    }
+  ],
+  "OutputPins":[
+    {
+      "Name":"OUT 1",
+      "ID":1016915918,
+      "Position":{
+        "x":11.5,
+        "y":0.8125
+      },
+      "BitCount":1,
+      "Colour":0,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"OUT 2",
+      "ID":485645432,
+      "Position":{
+        "x":11.5,
+        "y":0.3125
+      },
+      "BitCount":1,
+      "Colour":0,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"Carry OUT",
+      "ID":1736034744,
+      "Position":{
+        "x":11.5,
+        "y":-0.1875
+      },
+      "BitCount":1,
+      "Colour":0,
+      "ValueDisplayMode":0
+    }
+  ],
+  "SubChips":[
+    {
+      "Name":"Full Adder",
+      "ID":686572415,
+      "Label":"",
+      "Position":{
+        "x":2.3975,
+        "y":1.6875
+      },
+      "OutputPinColourInfo":[{"PinColour":0,"PinID":1272897961},{"PinColour":0,"PinID":1034340661}],
+      "InternalData":null
+    },
+    {
+      "Name":"Full Adder",
+      "ID":1993744631,
+      "Label":"",
+      "Position":{
+        "x":6.7725,
+        "y":0.5625
+      },
+      "OutputPinColourInfo":[{"PinColour":0,"PinID":1272897961},{"PinColour":0,"PinID":1034340661}],
+      "InternalData":null
+    }
+  ],
+  "Wires":[
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":1184034389
+      },
+      "TargetPinAddress":{
+        "PinID":1499378129,
+        "PinOwnerID":686572415
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":231381816
+      },
+      "TargetPinAddress":{
+        "PinID":2071739152,
+        "PinOwnerID":686572415
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":-0.8125,"y":-0.0625},{"x":-0.8125,"y":1.6875},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":1191567408
+      },
+      "TargetPinAddress":{
+        "PinID":232059689,
+        "PinOwnerID":686572415
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":-0.625,"y":-1.8125},{"x":-0.5625,"y":-1.8125},{"x":-0.5625,"y":1.4375},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":1034340661,
+        "PinOwnerID":686572415
+      },
+      "TargetPinAddress":{
+        "PinID":232059689,
+        "PinOwnerID":1993744631
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":4.4375,"y":1.4375},{"x":4.4375,"y":0.3125},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":835580252
+      },
+      "TargetPinAddress":{
+        "PinID":2071739152,
+        "PinOwnerID":1993744631
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":-0.3125,"y":-0.5625},{"x":-0.3125,"y":0.4375},{"x":-0.3125,"y":0.5625},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":4292492
+      },
+      "TargetPinAddress":{
+        "PinID":1499378129,
+        "PinOwnerID":1993744631
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":-1.0625,"y":1.4375},{"x":-1.0625,"y":0.8125},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":1272897961,
+        "PinOwnerID":686572415
+      },
+      "TargetPinAddress":{
+        "PinID":0,
+        "PinOwnerID":1016915918
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":8.9375,"y":1.9375},{"x":8.9375,"y":0.8125},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":1272897961,
+        "PinOwnerID":1993744631
+      },
+      "TargetPinAddress":{
+        "PinID":0,
+        "PinOwnerID":485645432
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":8.6875,"y":0.8125},{"x":8.8125,"y":0.8125},{"x":8.8125,"y":0.3125},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":1034340661,
+        "PinOwnerID":1993744631
+      },
+      "TargetPinAddress":{
+        "PinID":0,
+        "PinOwnerID":1736034744
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":7.5625,"y":0.3125},{"x":7.5625,"y":-0.1875},{"x":0.0,"y":0.0}]
+    }
+  ],
+  "Displays": null
+}
