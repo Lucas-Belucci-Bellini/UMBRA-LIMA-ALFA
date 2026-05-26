@@ -75,11 +75,11 @@ function buildCounterOvf(bits) {
 
 function generate() {
   const out = [];
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) {
     out.push(buildRippleCounter(w, true));
     out.push(buildRippleCounter(w, false));
   }
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 16]) out.push(buildCounterOvf(w));
+  for (const w of Array.from({length:31},(_,i)=>i+2)) out.push(buildCounterOvf(w));
   return out;
 }
 

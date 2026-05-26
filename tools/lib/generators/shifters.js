@@ -111,19 +111,19 @@ function buildBarrel(mode, bits) {
 function generate() {
   const out = [];
   for (const mode of ["SHL", "SHR", "ASR", "ROL", "ROR"]) {
-    for (const w of [4, 6, 8, 12, 16, 24, 32]) out.push(buildFixedShifter(mode, w, 1));
+    for (const w of Array.from({length:37},(_,i)=>i+4)) out.push(buildFixedShifter(mode, w, 1));
   }
   for (const mode of ["SHL", "SHR"]) {
-    for (const w of [8, 12, 16, 24, 32]) {
+    for (const w of Array.from({length:25},(_,i)=>i+8)) {
       out.push(buildFixedShifter(mode, w, 2));
       out.push(buildFixedShifter(mode, w, 3));
     }
   }
   for (const mode of ["SHL", "SHR"]) {
-    for (const w of [8, 12, 16, 24, 32]) out.push(buildBarrel(mode, w));
+    for (const w of Array.from({length:25},(_,i)=>i+8)) out.push(buildBarrel(mode, w));
   }
   for (const mode of ["ROL", "ROR"]) {
-    for (const w of [8, 12, 16]) out.push(buildBarrel(mode, w));
+    for (const w of Array.from({length:17},(_,i)=>i+8)) out.push(buildBarrel(mode, w));
   }
   return out;
 }

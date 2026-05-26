@@ -7,8 +7,8 @@ const {
 const registry = require("../pin-registry");
 const palette = require("../palette");
 
-const ADDER_WIDTHS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 20, 24, 32];
-const INCDEC_WIDTHS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 20, 24, 32];
+const ADDER_WIDTHS = Array.from({length:63},(_,i)=>i+2);
+const INCDEC_WIDTHS = Array.from({length:63},(_,i)=>i+2);
 
 function names(prefix, n) {
   return Array.from({ length: n }, (_, i) => `${prefix}${i + 1}`);

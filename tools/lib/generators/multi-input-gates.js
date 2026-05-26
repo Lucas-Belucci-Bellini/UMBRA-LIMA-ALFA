@@ -9,7 +9,7 @@ const registry = require("../pin-registry");
 const palette = require("../palette");
 const { reduce, notOf } = require("../logic");
 
-const SIZES = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 20, 24, 32];
+const SIZES = Array.from({length:126},(_,i)=>i+3);
 
 const FAMILY = {
   AND:  { base: "AND", invert: false, cat: "GATE_AND" },

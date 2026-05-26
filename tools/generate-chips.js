@@ -9,7 +9,7 @@ const { serialize, validate, finalize } = require("./lib/chip-builder");
 const registry = require("./lib/pin-registry");
 
 const GENERATORS_DIR = path.join(__dirname, "lib", "generators");
-const OUT_DIR = path.join(__dirname, "..", "chips");
+const OUT_DIR = path.join(__dirname, "..", "Chips");
 
 // Teto de chips novos. Alto de propósito — o usuário pediu "pode passar
 // de 1100"; o gerador escreve tudo que os módulos produzirem.

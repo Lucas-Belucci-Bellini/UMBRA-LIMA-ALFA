@@ -163,7 +163,7 @@ function generate() {
   out.push(buildJKFF());
   out.push(buildSRFF());
   out.push(buildDEFF());
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 24, 32]) out.push(buildDFFBank(w));
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildDFFBank(w));
   return out;
 }
 
