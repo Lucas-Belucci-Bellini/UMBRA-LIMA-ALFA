@@ -130,7 +130,7 @@ function generate() {
   const out = [];
   out.push(halfSubtractor());
   out.push(fullSubtractor());
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 20, 24, 32]) {
+  for (const w of Array.from({length:63},(_,i)=>i+2)) {
     out.push(nBitSubtractor(w));
   }
   return out;

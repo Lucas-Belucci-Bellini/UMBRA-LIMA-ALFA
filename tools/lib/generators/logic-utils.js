@@ -173,19 +173,19 @@ function buildDetector(bits, wantOnes) {
 
 function generate() {
   const out = [];
-  for (const w of [2, 3, 4, 5, 6, 8, 10, 12, 16, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) {
     out.push(buildGrayEnc(w));
     out.push(buildGrayDec(w));
   }
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) {
     out.push(buildConstant(w, false));
     out.push(buildConstant(w, true));
   }
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 32]) out.push(buildBuffer(w));
-  for (const n of [3, 5, 7]) out.push(buildMajority(n));
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildBuffer(w));
+  for (const n of [3, 5, 7, 9, 11, 13, 15]) out.push(buildMajority(n));
   out.push(buildAOI22(true));
   out.push(buildAOI22(false));
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 14, 16, 20, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) {
     out.push(buildDetector(w, false));
     out.push(buildDetector(w, true));
   }

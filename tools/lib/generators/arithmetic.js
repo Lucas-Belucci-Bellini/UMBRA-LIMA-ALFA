@@ -147,9 +147,9 @@ function buildMultiplier(bits) {
 
 function generate() {
   const out = [];
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 24, 32]) out.push(buildNegator(w));
-  for (const w of [2, 3, 4, 5, 6, 8, 10, 12, 16, 24, 32]) out.push(buildAbs(w));
-  for (const w of [2, 3, 4, 5, 6, 7, 8]) out.push(buildMultiplier(w));
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildNegator(w));
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildAbs(w));
+  for (const w of Array.from({length:11},(_,i)=>i+2)) out.push(buildMultiplier(w));
   return out;
 }
 

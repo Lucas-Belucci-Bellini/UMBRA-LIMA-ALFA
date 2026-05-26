@@ -151,7 +151,7 @@ function buildHalfExtract(bits, high) {
 
 function generate() {
   const out = [];
-  for (const w of [2, 3, 4, 5, 6, 8, 10, 12, 16, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) {
     out.push(buildMinMax(w, false));
     out.push(buildMinMax(w, true));
   }
@@ -159,9 +159,9 @@ function generate() {
     out.push(buildSext(f, t));
     out.push(buildZext(f, t));
   }
-  for (const w of [2, 3, 4, 5, 6, 8, 12, 16, 24, 32]) out.push(buildBitrev(w));
-  for (const w of [4, 8, 12, 16, 24, 32]) out.push(buildSwap(w));
-  for (const w of [4, 8, 12, 16, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildBitrev(w));
+  for (const w of Array.from({length:23},(_,i)=>4+i*2)) out.push(buildSwap(w));
+  for (const w of Array.from({length:23},(_,i)=>4+i*2)) {
     out.push(buildHalfExtract(w, false));
     out.push(buildHalfExtract(w, true));
   }
