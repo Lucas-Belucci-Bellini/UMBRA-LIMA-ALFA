@@ -182,7 +182,7 @@ function generate() {
     out.push(buildConstant(w, true));
   }
   for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildBuffer(w));
-  for (const n of [3, 5, 7, 9, 11, 13, 15]) out.push(buildMajority(n));
+  for (const n of [3, 5, 7, 9]) out.push(buildMajority(n));
   out.push(buildAOI22(true));
   out.push(buildAOI22(false));
   for (const w of Array.from({length:47},(_,i)=>i+2)) {
