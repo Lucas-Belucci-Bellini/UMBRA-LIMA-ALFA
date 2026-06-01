@@ -7,7 +7,7 @@ const {
 const registry = require("../pin-registry");
 const palette = require("../palette");
 
-const WIDTHS = Array.from({length:95},(_,i)=>i+2);
+const WIDTHS = Array.from({length:129},(_,i)=>i+2);
 
 const BINARY = {
   AND:  { base: "AND", invert: false },
