@@ -28,6 +28,10 @@ const CATEGORY = {
   REGISTER:     { collection: "SHIFT REGISTERS",    colour: rgb(150, 102, 64) },
   PARITY:       { collection: "PARITY / BITCOUNT",  colour: rgb(166, 204, 52) },
   LOGICUTIL:    { collection: "LOGIC UTILS",        colour: rgb(102, 90, 192) },
+  OPSEL_MUX:    { collection: "OP-SELECT MUX",      colour: rgb(64, 140, 230) },
+  OPSEL_DEC:    { collection: "OP-SELECT DEC",      colour: rgb(230, 102, 166) },
+  ALU:          { collection: "ULA / ALU",          colour: rgb(220, 80, 100) },
+  ALU_UTILS:    { collection: "ULA UTILS",          colour: rgb(180, 96, 156) },
   MISC:         { collection: "UTILITIES",          colour: rgb(116, 128, 148) }
 };
 
@@ -60,6 +64,10 @@ const COLLECTION_ORDER = [
   "SHIFT REGISTERS",
   "PARITY / BITCOUNT",
   "LOGIC UTILS",
+  "OP-SELECT MUX",
+  "OP-SELECT DEC",
+  "ULA UTILS",
+  "ULA / ALU",
   "UTILITIES"
 ];
 

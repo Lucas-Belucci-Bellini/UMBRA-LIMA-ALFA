@@ -9,11 +9,11 @@ const { serialize, validate, finalize } = require("./lib/chip-builder");
 const registry = require("./lib/pin-registry");
 
 const GENERATORS_DIR = path.join(__dirname, "lib", "generators");
-const OUT_DIR = path.join(__dirname, "..", "chips");
+const OUT_DIR = path.join(__dirname, "..", "Chips");
 
 // Teto de chips novos. Alto de propósito — o usuário pediu "pode passar
 // de 1100"; o gerador escreve tudo que os módulos produzirem.
-const MAX_NEW = 5000;
+const MAX_NEW = 20000;
 
 // Ordem dos geradores importa: chips que outros usam como subchip
 // têm que ser gerados antes.
@@ -28,6 +28,7 @@ const ORDER = [
   "muxes",
   "alu",
   "encoders",
+  "op-selector",
   "shifters",
   "arithmetic",
   "parity",
@@ -37,6 +38,7 @@ const ORDER = [
   "registers",
   "misc",
   "bitops",
+  "alu-builders",
   "extras"
 ];
 

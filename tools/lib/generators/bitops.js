@@ -73,7 +73,7 @@ function generate() {
     out.push(buildBitOp(w, "CLR"));
     out.push(buildBitOp(w, "TOGGLE"));
   }
-  for (const w of [2, 3, 4, 5, 6, 8, 10, 12, 16, 24, 32]) out.push(buildEnable(w));
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildEnable(w));
   return out;
 }
 

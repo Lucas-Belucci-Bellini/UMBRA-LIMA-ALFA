@@ -116,13 +116,13 @@ function buildPopcount(bits) {
 
 function generate() {
   const out = [];
-  const pw = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 20, 24, 32];
+  const pw = Array.from({length:63},(_,i)=>i+2);
   for (const w of pw) {
     out.push(buildParityGen(w, false));
     out.push(buildParityGen(w, true));
     out.push(buildParityCheck(w));
   }
-  for (const w of [3, 4, 5, 6, 7, 8, 10, 12, 16]) out.push(buildPopcount(w));
+  for (const w of Array.from({length:30},(_,i)=>i+3)) out.push(buildPopcount(w));
   return out;
 }
 

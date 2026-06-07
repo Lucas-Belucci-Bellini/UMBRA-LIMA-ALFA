@@ -6,7 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const palette = require("./lib/palette");
 
-const CHIPS_DIR = path.join(__dirname, "..", "chips");
+const CHIPS_DIR = path.join(__dirname, "..", "Chips");
 const PD_PATH = path.join(__dirname, "..", "ProjectDescription.json");
 const MANIFEST_PATH = path.join(__dirname, "generated-manifest.json");
 

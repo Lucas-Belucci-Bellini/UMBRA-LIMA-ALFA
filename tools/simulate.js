@@ -8,7 +8,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const DIR = path.join(__dirname, "..", "chips");
+const DIR = path.join(__dirname, "..", "Chips");
 const jsonCache = {};
 function loadChip(name) {
   if (name in jsonCache) return jsonCache[name];

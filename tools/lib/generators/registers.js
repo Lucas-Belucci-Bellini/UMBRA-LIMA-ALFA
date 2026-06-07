@@ -162,13 +162,13 @@ function buildShiftReg(bits) {
 
 function generate() {
   const out = [];
-  for (const w of [2, 3, 4, 5, 6, 7, 8, 10, 12, 16, 24, 32]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) {
     out.push(buildSIPO(w));
     out.push(buildSISO(w));
     out.push(buildPIPO(w));
     out.push(buildPISO(w));
   }
-  for (const w of [4, 5, 6, 7, 8, 10, 12, 16, 24, 32]) out.push(buildShiftReg(w));
+  for (const w of Array.from({length:45},(_,i)=>i+4)) out.push(buildShiftReg(w));
   return out;
 }
 

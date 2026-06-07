@@ -122,10 +122,10 @@ function build3(bits, wantMax) {
 
 function generate() {
   const out = [];
-  for (const w of [2, 3, 4, 5, 6, 8, 10, 12, 16, 24, 32]) out.push(buildPriority(w));
-  for (const w of [3, 4, 5, 6, 7, 8, 10, 12, 16]) out.push(buildIsOnehot(w));
-  for (const w of [4, 5, 6, 8, 10, 12, 16]) out.push(buildAbsDiff(w));
-  for (const w of [4, 6, 8, 12, 16]) {
+  for (const w of Array.from({length:47},(_,i)=>i+2)) out.push(buildPriority(w));
+  for (const w of Array.from({length:30},(_,i)=>i+3)) out.push(buildIsOnehot(w));
+  for (const w of Array.from({length:29},(_,i)=>i+4)) out.push(buildAbsDiff(w));
+  for (const w of Array.from({length:29},(_,i)=>i+4)) {
     out.push(build3(w, false));
     out.push(build3(w, true));
   }

@@ -107,11 +107,11 @@ function buildPriorityEncoder(k) {
 
 function generate() {
   const out = [];
-  for (const k of [2, 3, 4, 5]) {
+  for (const k of [2, 3, 4, 5, 6]) {
     out.push(buildDecoder(k, false));
     out.push(buildDecoder(k, true));
   }
-  for (const k of [2, 3, 4, 5]) {
+  for (const k of [2, 3, 4, 5, 6]) {
     out.push(buildEncoder(k));
     out.push(buildPriorityEncoder(k));
   }
