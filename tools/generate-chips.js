@@ -38,6 +38,7 @@ const ORDER = [
   "registers",
   "misc",
   "bitops",
+  "alu-builders",
   "extras"
 ];
 
