@@ -22,7 +22,6 @@
     "MTRX_REG",
     "2-BIT_MULT",
     "16-REG",
-    "OR-4 ",
     "MTRX_16-REG",
     "16x16-REG",
     "1-ADD",
@@ -87,13 +86,12 @@
     "4-bit Adder",
     "8-bit Adder",
     "(8 Bits) 8-bit Adder",
-    "Buffer ",
+    "Buffer",
     "8 - Bits Adder",
     "8 - Bits ADD",
     "NOR",
     "D - Latch",
     "4 - BITS Resgister",
-    "Half Adder ",
     "half sub",
     "Half Subtractor",
     "Full Subtractor",
@@ -1132,7 +1130,8 @@
     "MAX3-12",
     "MIN3-16",
     "MAX3-16",
-    "CTRL-SHIFT-R-8"
+    "CTRL-SHIFT-R-8",
+    "EXERCICIO-ROL8"
   ],
   "StarredList": [
     {
@@ -1144,27 +1143,11 @@
       "IsCollection": true
     },
     {
-      "Name": "LOGIC",
-      "IsCollection": true
-    },
-    {
-      "Name": "BASIC",
-      "IsCollection": true
-    },
-    {
       "Name": "MEMORY",
       "IsCollection": true
     },
     {
       "Name": "DISPLAY",
-      "IsCollection": true
-    },
-    {
-      "Name": "OTHER",
-      "IsCollection": true
-    },
-    {
-      "Name": "ARITHMETIC",
       "IsCollection": true
     },
     {
@@ -1238,18 +1221,153 @@
     {
       "Name": "UTILITIES",
       "IsCollection": true
+    },
+    {
+      "Name": "PORTAS BASICAS",
+      "IsCollection": true
+    },
+    {
+      "Name": "PORTAS 8 BITS (LEGADO)",
+      "IsCollection": true
+    },
+    {
+      "Name": "SOMADORES BASICOS",
+      "IsCollection": true
+    },
+    {
+      "Name": "TEMPORIZACAO",
+      "IsCollection": true
+    },
+    {
+      "Name": "PROJETOS",
+      "IsCollection": true
+    },
+    {
+      "Name": "BUFFERS / SELECAO",
+      "IsCollection": true
+    },
+    {
+      "Name": "ENTRADA / SAIDA FISICA",
+      "IsCollection": true
+    },
+    {
+      "Name": "RASCUNHO",
+      "IsCollection": true
     }
   ],
   "ChipCollections": [
     {
       "Chips": [
-        "CLOCK",
-        "KEY",
-        "3-STATE BUFFER",
-        "BYTE 3-STATE BUFFER"
+        "NAND",
+        "AND",
+        "OR",
+        "NOT",
+        "XOR",
+        "XNOR",
+        "NOR",
+        "1",
+        "0"
       ],
       "IsToggledOpen": true,
-      "Name": "BASIC"
+      "Name": "PORTAS BASICAS"
+    },
+    {
+      "Chips": [
+        "AND-8 Bits",
+        "AND-3 8 bits",
+        "NAND-8Bits",
+        "OR-8 Bits",
+        "NOT-8 Bits",
+        "XOR - 8 BIT",
+        "8x2-AND",
+        "8x2-OR",
+        "8x2-XOR",
+        "8-1AND",
+        "16 para 8 e 4 bits"
+      ],
+      "IsToggledOpen": true,
+      "Name": "PORTAS 8 BITS (LEGADO)"
+    },
+    {
+      "Chips": [
+        "Half Adder",
+        "Full Adder",
+        "Full Adder - 8 Bits",
+        "2-bit Adder",
+        "4-bit Adder",
+        "8-bit Adder",
+        "(8 Bits) 8-bit Adder",
+        "8 - Bits Adder",
+        "8 - Bits ADD",
+        "1-ADD",
+        "4-ADD",
+        "8-ADD"
+      ],
+      "IsToggledOpen": true,
+      "Name": "SOMADORES BASICOS"
+    },
+    {
+      "Chips": [
+        "CLOCK",
+        "PULSE",
+        "DELAY",
+        "DELAY1",
+        "DELAY2",
+        "DELAY-RNG",
+        "8-DELAY",
+        "RISE",
+        "RISE2",
+        "RISE3",
+        "T-400"
+      ],
+      "IsToggledOpen": true,
+      "Name": "TEMPORIZACAO"
+    },
+    {
+      "Chips": [
+        "ULA",
+        "COMPUTER",
+        "COMPUTER-FIB",
+        "LFSR",
+        "COUNTER",
+        "2-BIT_MULT",
+        "NEGATE-8",
+        "ui"
+      ],
+      "IsToggledOpen": true,
+      "Name": "PROJETOS"
+    },
+    {
+      "Chips": [
+        "3-STATE BUFFER",
+        "BYTE 3-STATE BUFFER",
+        "Buffer",
+        "LONGIFY",
+        "SELECT-2",
+        "4-8MUX",
+        "1-8MUX",
+        "2-8MUX",
+        "EQUAL-4"
+      ],
+      "IsToggledOpen": true,
+      "Name": "BUFFERS / SELECAO"
+    },
+    {
+      "Chips": [
+        "KEY",
+        "BUZZER"
+      ],
+      "IsToggledOpen": true,
+      "Name": "ENTRADA / SAIDA FISICA"
+    },
+    {
+      "Chips": [
+        "Teste 1",
+        "Teste 2",
+        "EXERCICIO-ROL8"
+      ],
+      "IsToggledOpen": true,
+      "Name": "RASCUNHO"
     },
     {
       "Chips": [
@@ -1286,54 +1404,6 @@
     },
     {
       "Chips": [
-        "D - Latch",
-        "2-bit Adder",
-        "AND-4",
-        "AND-3",
-        "NAND",
-        "XOR",
-        "AND",
-        "OR",
-        "OR-3",
-        "OR-4 ",
-        "NOT",
-        "8x2-OR",
-        "8x2-AND",
-        "8x2-XOR",
-        "XNOR",
-        "1",
-        "0",
-        "8-1AND",
-        "NAND-3",
-        "NAND-4",
-        "XNOR-3",
-        "XNOR-4",
-        "16 para 8 e 4 bits",
-        "NAND-8Bits",
-        "Full Adder",
-        "Half Adder",
-        "OR-8 Bits",
-        "NOT-8 Bits",
-        "AND-3 8 bits",
-        "UP DWN SHIFT",
-        "AND-8 Bits",
-        "XOR - 8 BIT",
-        "Full Adder - 8 Bits",
-        "4-bit Adder",
-        "8-bit Adder",
-        "(8 Bits) 8-bit Adder",
-        "Buffer ",
-        "8 - Bits Adder",
-        "8 - Bits ADD",
-        "NOR",
-        "4 - BITS Resgister",
-        "Half Subtractor"
-      ],
-      "IsToggledOpen": true,
-      "Name": "LOGIC"
-    },
-    {
-      "Chips": [
         "7-SEGMENT",
         "DOT DISPLAY",
         "RGB DISPLAY",
@@ -1354,56 +1424,12 @@
         "256x8-REG",
         "SYNC_256x16-RAM",
         "BYTE-REG",
-        "SYNC_BYTE-REG"
+        "SYNC_BYTE-REG",
+        "4 - BITS Resgister",
+        "SYNC_REG"
       ],
       "IsToggledOpen": true,
       "Name": "MEMORY"
-    },
-    {
-      "Chips": [
-        "2-BIT_MULT",
-        "RISE",
-        "RISE2",
-        "DELAY1",
-        "NEGATE-8",
-        "EQUAL-4",
-        "4-8MUX",
-        "COUNTER",
-        "1-8MUX",
-        "8-DELAY",
-        "SYNC_REG",
-        "DELAY",
-        "LONGIFY",
-        "DELAY2",
-        "DELAY-RNG",
-        "SELECT-2",
-        "2-8MUX",
-        "RISE3",
-        "COMPUTER",
-        "PULSE",
-        "LFSR",
-        "BUZZER",
-        "COMPUTER-FIB",
-        "Teste 1",
-        "Teste 2",
-        "T-400",
-        "ui",
-        "Half Adder ",
-        "half sub",
-        "Full Subtractor"
-      ],
-      "IsToggledOpen": true,
-      "Name": "OTHER"
-    },
-    {
-      "Chips": [
-        "8-ADD",
-        "ULA",
-        "4-ADD",
-        "1-ADD"
-      ],
-      "IsToggledOpen": true,
-      "Name": "ARITHMETIC"
     },
     {
       "Chips": [
@@ -1424,7 +1450,8 @@
         "16-bit Subtractor",
         "20-bit Subtractor",
         "24-bit Subtractor",
-        "32-bit Subtractor"
+        "32-bit Subtractor",
+        "half sub"
       ],
       "IsToggledOpen": false,
       "Name": "SUBTRACTORS"
@@ -1519,7 +1546,14 @@
         "XNOR-16",
         "XNOR-20",
         "XNOR-24",
-        "XNOR-32"
+        "XNOR-32",
+        "AND-3",
+        "AND-4",
+        "OR-3",
+        "NAND-3",
+        "NAND-4",
+        "XNOR-3",
+        "XNOR-4"
       ],
       "IsToggledOpen": false,
       "Name": "MULTI-GATES"
@@ -2110,7 +2144,8 @@
         "BARREL-ROL-16",
         "BARREL-ROR-8",
         "BARREL-ROR-12",
-        "BARREL-ROR-16"
+        "BARREL-ROR-16",
+        "UP DWN SHIFT"
       ],
       "IsToggledOpen": false,
       "Name": "SHIFTERS"
@@ -2133,7 +2168,8 @@
         "D-FF-12",
         "D-FF-16",
         "D-FF-24",
-        "D-FF-32"
+        "D-FF-32",
+        "D - Latch"
       ],
       "IsToggledOpen": false,
       "Name": "FLIP-FLOPS"
