@@ -39,7 +39,9 @@ const ORDER = [
   "misc",
   "bitops",
   "alu-builders",
-  "extras"
+  "extras",
+  "memory",
+  "bcd"
 ];
 
 function loadGenerators() {
