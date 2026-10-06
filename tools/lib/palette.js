@@ -28,6 +28,7 @@ const CATEGORY = {
   REGISTER:     { collection: "SHIFT REGISTERS",    colour: rgb(150, 102, 64) },
   PARITY:       { collection: "PARITY / BITCOUNT",  colour: rgb(166, 204, 52) },
   LOGICUTIL:    { collection: "LOGIC UTILS",        colour: rgb(102, 90, 192) },
+  KMAP4:        { collection: "KARNAUGH / 4-VARIÁVEIS", colour: rgb(64, 178, 166) },
   MISC:         { collection: "UTILITIES",          colour: rgb(116, 128, 148) }
 };
 
@@ -60,6 +61,7 @@ const COLLECTION_ORDER = [
   "SHIFT REGISTERS",
   "PARITY / BITCOUNT",
   "LOGIC UTILS",
+  "KARNAUGH / 4-VARIÁVEIS",
   "UTILITIES"
 ];
 

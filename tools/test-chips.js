@@ -149,6 +149,26 @@ for (let v = 0; v < 16; v++) {
   check(`NEG4 ${v}`, getBits(r, "O", 4, 0) === ((-v) & 15));
 }
 
+// ---- Funções K-map do quadro (A é o bit menos significativo) ----
+const whiteboardMasks = [
+  ["KMAP4-A", 61421], ["KMAP4-B", 40863], ["KMAP4-C", 64507],
+  ["KMAP4-D", 28525], ["KMAP4-E", 17733], ["KMAP4-F", 53584]
+];
+for (const [name, mask] of whiteboardMasks) {
+  for (let index = 0; index < 16; index++) {
+    const inputs = [0, 1, 2, 3].map((bit) => (index >> bit) & 1);
+    check(`${name} ${index.toString(2).padStart(4, "0")}`,
+      ev(name, inputs)[0] === ((mask >> index) & 1));
+  }
+}
+for (const mask of [0x0000, 0x0001, 0x1234, 0x4567, 0x6996, 0x6FFF]) {
+  const name = `KMAP4-LUT-${mask.toString(16).toUpperCase().padStart(4, "0")}`;
+  for (let index = 0; index < 16; index++) {
+    const inputs = [0, 1, 2, 3].map((bit) => (index >> bit) & 1);
+    check(`${name} ${index}`, ev(name, inputs)[0] === ((mask >> index) & 1));
+  }
+}
+
 console.log(`\n=== RESULTADO: ${pass} passou, ${fail} falhou ===`);
 if (fail > 0) {
   console.log("FALHAS (primeiras 15):");

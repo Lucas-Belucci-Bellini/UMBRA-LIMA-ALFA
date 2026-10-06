@@ -1,12 +1,10 @@
-// build-project-description.js — atualiza o ProjectDescription.json do
-// projeto: adiciona os 505 chips novos em AllCustomChipNames e cria uma
-// ChipCollection (coleção colorida na biblioteca do DLS) por categoria.
+// build-project-description.js — sincroniza chips e coleções no projeto DLS.
 
 const fs = require("fs");
 const path = require("path");
 const palette = require("./lib/palette");
 
-const CHIPS_DIR = path.join(__dirname, "..", "chips");
+const CHIPS_DIR = path.join(__dirname, "..", "Chips");
 const PD_PATH = path.join(__dirname, "..", "ProjectDescription.json");
 const MANIFEST_PATH = path.join(__dirname, "generated-manifest.json");
 
@@ -14,23 +12,27 @@ function main() {
   const pd = JSON.parse(fs.readFileSync(PD_PATH, "utf8"));
   const manifest = JSON.parse(fs.readFileSync(MANIFEST_PATH, "utf8"));
 
-  // 1) AllCustomChipNames: mantém os existentes, adiciona os novos no fim.
-  const existing = new Set(pd.AllCustomChipNames || []);
-  for (const name of manifest.generated) {
+  // Mantém a lista alinhada aos arquivos ativos e ao manifesto de geração.
+  pd.AllCustomChipNames = pd.AllCustomChipNames || [];
+  const diskNames = fs.readdirSync(CHIPS_DIR)
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => file.slice(0, -5));
+  const existing = new Set(pd.AllCustomChipNames);
+  for (const name of [...diskNames, ...(manifest.generated || [])]) {
     if (!existing.has(name)) {
       pd.AllCustomChipNames.push(name);
       existing.add(name);
     }
   }
 
-  // 2) ChipCollections: cria uma coleção por categoria, na ordem da paleta.
+  // Cria/mescla uma coleção por categoria, na ordem da paleta.
   pd.ChipCollections = pd.ChipCollections || [];
   const existingCollNames = new Set(pd.ChipCollections.map((c) => c.Name));
   pd.StarredList = pd.StarredList || [];
   const starred = new Set(pd.StarredList.map((s) => s.Name));
 
   for (const collName of palette.COLLECTION_ORDER) {
-    const chips = manifest.collections[collName];
+    const chips = (manifest.collections || {})[collName];
     if (!chips || chips.length === 0) continue;
     if (existingCollNames.has(collName)) {
       // mescla nos chips já presentes
@@ -51,6 +53,22 @@ function main() {
     }
   }
 
+  const timerNames = ["DELAY", "DELAY1", "DELAY2", "8-DELAY", "DELAY-RNG", "T-400"]
+    .filter((name) => diskNames.includes(name));
+  if (timerNames.length) {
+    let timers = pd.ChipCollections.find((collection) => collection.Name === "TIMERS");
+    if (!timers) {
+      timers = { Chips: [], IsToggledOpen: false, Name: "TIMERS" };
+      pd.ChipCollections.push(timers);
+    }
+    timers.Chips = timers.Chips || [];
+    const inTimers = new Set(timers.Chips);
+    for (const name of timerNames) if (!inTimers.has(name)) timers.Chips.push(name);
+    if (!pd.StarredList.some((item) => item.Name === "TIMERS" && item.IsCollection)) {
+      pd.StarredList.push({ Name: "TIMERS", IsCollection: true });
+    }
+  }
+
   fs.writeFileSync(PD_PATH, JSON.stringify(pd, null, 2), "utf8");
 
   const total = pd.AllCustomChipNames.length;
@@ -58,6 +76,10 @@ function main() {
   console.log(`ProjectDescription atualizado:`);
   console.log(`  AllCustomChipNames: ${total} chips`);
   console.log(`  ChipCollections: ${pd.ChipCollections.length} (${newColls} novas categorias)`);
+  console.log(`  Arquivos Chips/*.json: ${diskNames.length}`);
+  if (total !== diskNames.length) {
+    throw new Error(`Divergência entre chips listados (${total}) e arquivos (${diskNames.length}).`);
+  }
   return pd;
 }
 
