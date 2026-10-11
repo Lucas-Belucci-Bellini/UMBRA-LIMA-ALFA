@@ -32,6 +32,12 @@ const CATEGORY = {
   OPSEL_DEC:    { collection: "OP-SELECT DEC",      colour: rgb(230, 102, 166) },
   ALU:          { collection: "ULA / ALU",          colour: rgb(220, 80, 100) },
   ALU_UTILS:    { collection: "ULA UTILS",          colour: rgb(180, 96, 156) },
+  MEMBIT:       { collection: "BIT CELLS",          colour: rgb(200, 40, 60) },
+  MEMWORD:      { collection: "WORD REGISTERS",     colour: rgb(176, 70, 40) },
+  RAM:          { collection: "RAM",                colour: rgb(40, 96, 200) },
+  RAMPLUS:      { collection: "RAM SYNC / CS",      colour: rgb(70, 120, 210) },
+  STACKFIFO:    { collection: "STACK / FIFO",       colour: rgb(34, 150, 120) },
+  BCD:          { collection: "BCD",                colour: rgb(236, 160, 30) },
   MISC:         { collection: "UTILITIES",          colour: rgb(116, 128, 148) }
 };
 
@@ -68,6 +74,12 @@ const COLLECTION_ORDER = [
   "OP-SELECT DEC",
   "ULA UTILS",
   "ULA / ALU",
+  "BIT CELLS",
+  "WORD REGISTERS",
+  "RAM",
+  "RAM SYNC / CS",
+  "STACK / FIFO",
+  "BCD",
   "UTILITIES"
 ];
 
