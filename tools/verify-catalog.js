@@ -3,7 +3,9 @@ const fs = require("fs");
 const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const CHIPS_DIR = path.join(ROOT, "Chips");
-const TARGET = 30000;
+// Catálogo de 30.000 + os chips da atividade Display 7-seg (build-display7.js).
+const DISPLAY7_EXTRAS = require("./build-display7").chipNames();
+const TARGET = 30000 + DISPLAY7_EXTRAS.length;
 const KMAP_TARGET = 28879;
 // Componentes internos do Digital Logic Sim referenciados por chips legados,
 // mas que não são arquivos customizados em Chips/.

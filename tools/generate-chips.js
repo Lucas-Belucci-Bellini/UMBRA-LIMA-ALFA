@@ -141,7 +141,9 @@ function main() {
   fs.writeFileSync(MANIFEST_PATH, JSON.stringify({ generated, collections }, null, 2) + "\n");
   const totalFiles = fs.readdirSync(OUT_DIR).filter((name) => name.endsWith(".json")).length;
   console.log(`=== ${totalFiles} arquivos no catálogo ===`);
-  if (totalFiles !== 30000) throw new Error(`Alvo não atingido: ${totalFiles} de 30000 arquivos.`);
+  // 30.000 do catálogo + os extras do build-display7.js (Display 7-seg).
+  const target = 30000 + require("./build-display7").chipNames().length;
+  if (totalFiles !== target) throw new Error(`Alvo não atingido: ${totalFiles} de ${target} arquivos.`);
   return { written, skipped, generated, collections };
 }
 
