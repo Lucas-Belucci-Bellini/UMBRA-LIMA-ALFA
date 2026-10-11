@@ -17,7 +17,7 @@ const BUILTINS = new Set([
   "BUS-1", "BUS-8", "BUS-TERMINUS-1", "BUS-TERMINUS-8", "BUS", "Bus",
   "1-4BIT", "4-1BIT", "1-8BIT", "8-1BIT", "4-8BIT", "8-4BIT",
   "IN", "OUT", "KEY", "CLOCK", "Clock",
-  "7SEG", "SevenSegmentDisplay", "DISPLAY", "DOT DISPLAY", "RGB DISPLAY",
+  "7SEG", "7-SEGMENT", "SevenSegmentDisplay", "DISPLAY", "DOT DISPLAY", "RGB DISPLAY",
   "ROM 256×16", "ROM", "ROM-256x16", "RAM", "dev-RAM-8", "EEPROM",
   "PULSE", "Button", "Toggle", "Constant", "SPLIT", "MERGE", "Label", "Note"
 ]);
