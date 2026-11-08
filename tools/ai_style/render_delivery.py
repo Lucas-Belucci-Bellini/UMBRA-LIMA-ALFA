@@ -261,18 +261,39 @@ def draw_seven_seg(cv, pos, scale, segs):
     cv.items.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" fill="black"/>'
                     % (cx - bw / 2, cy - bh / 2, bw, bh))
     layout = [
-        (0, (cx, cy + rh / 2), (sw, th), False),          # A topo
-        (1, (cx + ox, cy + oy), (th, sh), True),          # B sup dir
-        (2, (cx + ox, cy - oy), (th, sh), True),          # C inf dir
-        (3, (cx, cy - rh / 2), (sw, th), False),          # D base
-        (4, (cx - ox, cy - oy), (th, sh), True),          # E inf esq
-        (5, (cx - ox, cy + oy), (th, sh), True),          # F sup esq
+        (0, (cx, cy - rh / 2), (sw, th), False),          # A topo
+        (1, (cx + ox, cy - oy), (th, sh), True),          # B sup dir
+        (2, (cx + ox, cy + oy), (th, sh), True),          # C inf dir
+        (3, (cx, cy + rh / 2), (sw, th), False),          # D base
+        (4, (cx - ox, cy + oy), (th, sh), True),          # E inf esq
+        (5, (cx - ox, cy - oy), (th, sh), True),          # F sup esq
         (6, (cx, cy), (sw, th), False),                   # G meio
     ]
     for i, (px, py), (w, h), vert in layout:
         col = SEG_ON if (segs and segs[i]) else SEG_OFF
         pts = " ".join("%.2f,%.2f" % (a, b) for a, b in seg_polygon(px, py, w, h, vert))
         cv.items.append('<polygon points="%s" fill="%s"/>' % (pts, rgb(col)))
+
+
+# BuiltinChipCreator: chips de display / bus / key usam NameDisplayLocation.Hidden
+NAME_HIDDEN = {"7-SEGMENT", "LED", "RGB DISPLAY", "DOT DISPLAY", "KEY",
+               "BUS-1", "BUS-4", "BUS-8",
+               "BUS-TERMINUS-1", "BUS-TERMINUS-4", "BUS-TERMINUS-8"}
+
+
+def chip_name_lines(name):
+    """SubChipInstance.CreateMultiLineName: uma linha se for curto ou sem
+    espaco; senao divide no espaco que melhor equilibra os dois lados."""
+    if len(name) <= 6 or " " not in name:
+        return [name]
+    best, pen = [name], 1e9
+    for i, ch in enumerate(name):
+        if ch == " ":
+            a, b = name[:i].strip(), name[i:].strip()
+            p = abs(len(a) - len(b))
+            if p < pen:
+                best, pen = [a, b], p
+    return best
 
 
 def draw_subchip(cv, name, pos):
@@ -285,12 +306,31 @@ def draw_subchip(cv, name, pos):
                        W + CHIP_OUTLINE * cv.s, H + CHIP_OUTLINE * cv.s, rgb(outline_col(col))))
     cv.items.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" fill="%s"/>'
                     % (cx - W / 2, cy - H / 2, W, H, rgb(col)))
+    # DevSceneDrawer.DrawSubChip: o nome SEMPRE aparece (salvo NameLocation
+    # Hidden); uma linha se couber, senao a versao em duas linhas.
     fs = FONT_CHIP * cv.s
-    if fs > 6 and W > len(name) * fs * 0.62:
-        tc = "black" if lum(col) > 0.5 else "white"
+    if fs <= 4 or name in NAME_HIDDEN:
+        return
+    tc = "black" if lum(col) > 0.5 else "white"
+    fits = len(name) * fs * 0.62 < W - PIN_RADIUS * 2.5 * cv.s
+    lines = [name] if fits else chip_name_lines(name)
+    loc = 0
+    try:
+        loc = int(S.load(name).get("NameLocation", 0)) if name not in A.BUILTIN else 0
+    except Exception:
+        loc = 0
+    lh = fs * 1.05
+    if loc == 1:  # Top: faixa de fundo + texto encostado no topo
+        band_h = G * cv.s + lh * len(lines)
+        cv.items.append('<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" fill="%s"/>'
+                        % (cx - W / 2, cy - H / 2, W, band_h, rgb(border_col(col))))
+        y0 = cy - H / 2 + G * cv.s / 2 + lh / 2
+    else:
+        y0 = cy - (len(lines) - 1) * lh / 2
+    for i, ln in enumerate(lines):
         cv.items.append('<text x="%.2f" y="%.2f" fill="%s" font-size="%.1f" font-weight="700" '
                         'text-anchor="middle">%s</text>'
-                        % (cx, cy + fs * 0.35, tc, fs, name))
+                        % (cx, y0 + i * lh + fs * 0.35, tc, fs, ln))
 
 
 def sub_pin_pos(name, pos, pid, is_out):
