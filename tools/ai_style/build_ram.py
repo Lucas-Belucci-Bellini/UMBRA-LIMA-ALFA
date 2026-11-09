@@ -55,6 +55,10 @@ class Builder:
         return s["ID"]
 
     def wire(self, src, dst):
+        for p in (src, dst):
+            if not (isinstance(p, tuple) and len(p) == 2
+                    and all(isinstance(v, int) for v in p)):
+                raise ValueError("endereco de pino invalido: %r" % (p,))
         self.wires.append({
             "SourcePinAddress": {"PinID": src[1], "PinOwnerID": src[0]},
             "TargetPinAddress": {"PinID": dst[1], "PinOwnerID": dst[0]},
