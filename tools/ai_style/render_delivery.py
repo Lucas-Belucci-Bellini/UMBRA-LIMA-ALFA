@@ -104,7 +104,13 @@ def probe(chip, value):
     S._memo.clear()
     S.NET_ON = True
     try:
+        sys.setrecursionlimit(40000)
         S.run(chip, ins)
+    except RecursionError:
+        # chip sequencial (latch/RAM): sem estado combinacional p/ mostrar;
+        # desenha a estrutura com os fios em nivel baixo.
+        S.NET.clear()
+        S.DISPLAY_LOG.clear()
     finally:
         S.NET_ON = False
     segs = {}
