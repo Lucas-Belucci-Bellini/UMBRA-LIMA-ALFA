@@ -130,7 +130,7 @@ def build_alu():
         R.append(v)
     wire_triple(b, merge_triple(b, R), triple_out(b, "R", 4))
     b.wire(b.and2(err_div, b.or2(sel[3], sel[7])), (b.out_pin("ERR", 1, 1), 0))
-    return reg(b.save())
+    return reg(b.save(write=False))
 
 
 # ---------------------------------------------------------------- teclado
@@ -149,7 +149,7 @@ def build_keypad():
     b.wire(b.and2(any_, b.inv((f, fom["Q"]))), (b.out_pin("KP", 1, 6), 0))
     for j in range(5):
         b.wire(code[j], (b.out_pin("KC" + str(j), 1, 3), 0))
-    return reg(b.save())
+    return reg(b.save(write=False))
 
 
 # ---------------------------------------------------------------- nucleo
@@ -254,7 +254,7 @@ def build_core():
                     ("DBG_ACCV0", accv[0]), ("DBG_DX0", DX[0]), ("DBG_KP", kp),
                     ("DBG_USE", useR), ("DBG_BIN", binop)):
         b.wire(sig, (b.out_pin(nm, 1, 6), 0))
-    return reg(b.save())
+    return reg(b.save(write=False))
 
 
 # ---------------------------------------------------------------- BCD-SEG
@@ -271,7 +271,7 @@ def build_seg():
     for i, name in enumerate("abcdefg"):
         b.wire(b.or_tree([mint[k] for k in SEG_ON[name]]),
                (b.out_pin("S" + name, 1, 4), 0))
-    return reg(b.save())
+    return reg(b.save(write=False))
 
 
 # ---------------------------------------------------------------- topo
@@ -311,7 +311,7 @@ def build_top():
         segs.append(disp)
     led = b.sub("LED")
     b.wire((co, omc["ERR"]), (led, 0))
-    d = b.save()
+    d = b.save(write=False)
     d["NameLocation"] = 1
     d["Displays"] = [{"SubChipID": sid,
                       "Position": {"x": 0.8 - 0.4 * i, "y": -0.15},
@@ -344,11 +344,12 @@ def shown(sim):
 
 
 def main(write):
+    chips = []
     for fn in (BC.build_dff, BC.build_reg17, BC.build_add17, BC.build_mul17,
                BC.build_div17, BC.build_sqrt17, BC.build_dd17):
-        reg(fn())
-    chips = [build_alu(), build_keypad(), build_core(), build_seg(),
-             build_top()]
+        chips.append(reg(fn()))
+    chips += [build_alu(), build_keypad(), build_core(), build_seg(),
+              build_top()]
     if write:
         for d in chips:
             with open(os.path.join(CHIPS, d["Name"] + ".json"), "w",

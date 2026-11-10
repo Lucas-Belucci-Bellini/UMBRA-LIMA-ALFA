@@ -116,16 +116,18 @@ class Builder:
         self.wire(src, (s, 0))
         return [(s, 8 - i) for i in range(8)]   # bit i (LSB0) = pino 8-i
 
-    def save(self):
+    def save(self, write=True):
+        """Monta o netlist; write=False nao toca o arquivo nem seu layout."""
         d = {"DLSVersion": "2.1.6", "Name": self.name, "NameLocation": 0,
              "ChipType": 0, "Size": {"x": 2.0, "y": 2.0},
              "Colour": {"r": self.colour[0], "g": self.colour[1],
                         "b": self.colour[2], "a": 1},
              "InputPins": self.ins, "OutputPins": self.outs,
              "SubChips": self.subs, "Wires": self.wires, "Displays": []}
-        with open(os.path.join(CHIPS, self.name + ".json"), "w",
-                  encoding="utf-8", newline="\n") as f:
-            json.dump(d, f, indent=1, ensure_ascii=False)
+        if write:
+            with open(os.path.join(CHIPS, self.name + ".json"), "w",
+                      encoding="utf-8", newline="\n") as f:
+                json.dump(d, f, indent=1, ensure_ascii=False)
         return d
 
 

@@ -165,7 +165,7 @@ def build_dff():
     b.wire(s1, (q, 0)); b.wire((qb, 2), (q, 1))
     b.wire(s2, (qb, 0)); b.wire((q, 2), (qb, 1))
     b.wire((q, 2), (b.out_pin("Q", 1, 4), 0))
-    return b.save()
+    return b.save(write=False)
 
 
 def build_reg17():
@@ -181,7 +181,7 @@ def build_reg17():
         b.wire(mux2(b, (en, 0), (f, fom["Q"]), bit), (f, fim["D"]))
         bits.append((f, fom["Q"]))
     wire_triple(b, merge_triple(b, bits), dout)
-    return b.save()
+    return b.save(write=False)
 
 
 def build_add17():
@@ -192,7 +192,7 @@ def build_add17():
     s, cout = addN(b, A, B, (cin, 0))
     wire_triple(b, merge_triple(b, s), triple_out(b, "S", 4))
     b.wire(cout, (b.out_pin("COUT", 1, 6), 0))
-    return b.save()
+    return b.save(write=False)
 
 
 def build_mul17():
@@ -213,7 +213,7 @@ def build_mul17():
             acc = acc[:i] + s
     wire_triple(b, merge_triple(b, acc), triple_out(b, "S", 4))
     b.wire(b.or_tree(discarded), (b.out_pin("OV", 1, 6), 0))
-    return b.save()
+    return b.save(write=False)
 
 
 def build_div17():
@@ -232,7 +232,7 @@ def build_div17():
     wire_triple(b, merge_triple(b, Q), triple_out(b, "Q", 4))
     wire_triple(b, merge_triple(b, R), triple_out(b, "R", 6))
     b.wire(eq0(b, B), (b.out_pin("ERR", 1, 1), 0))
-    return b.save()
+    return b.save(write=False)
 
 
 def build_sqrt17():
@@ -252,7 +252,7 @@ def build_sqrt17():
         root = [ge] + root[:8]              # root<<1 | ge
     out = root + [zero] * 8
     wire_triple(b, merge_triple(b, out), triple_out(b, "R", 4))
-    return b.save()
+    return b.save(write=False)
 
 
 def build_dd17():
@@ -274,7 +274,7 @@ def build_dd17():
             b.wire(nib[dg * 4 + i], (m, 3 - i))
         outs.append(b.out_pin("D" + str(dg), 4, 4, 1))
         b.wire((m, 4), (outs[-1], 0))
-    return b.save()
+    return b.save(write=False)
 
 
 # ---------------------------------------------------------------- testes
