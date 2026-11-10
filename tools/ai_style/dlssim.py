@@ -82,13 +82,17 @@ def _run(name, ins, path=""):
     d = load(name)
     in_ids = {p["ID"] for p in d["InputPins"]}
     subs = {s["ID"]: s for s in d["SubChips"]}
+    # Indice local por dono -> pino -> fonte: cada subchip visita apenas suas
+    # entradas, em vez de varrer todos os fios a cada avaliacao (custo quadratico).
     drv = {}
     for w in d["Wires"]:
         s, t = w["SourcePinAddress"], w["TargetPinAddress"]
-        key = (t["PinOwnerID"], t["PinID"])
-        if key in drv and drv[key] != (s["PinOwnerID"], s["PinID"]):
-            raise RuntimeError(f"{name}: pin {key} driven twice")
-        drv[key] = (s["PinOwnerID"], s["PinID"])
+        owner, pin = t["PinOwnerID"], t["PinID"]
+        inputs = drv.setdefault(owner, {})
+        source = (s["PinOwnerID"], s["PinID"])
+        if pin in inputs and inputs[pin] != source:
+            raise RuntimeError(f"{name}: pin {(owner, pin)} driven twice")
+        inputs[pin] = source
     sub_out = {}
 
     def val(owner, pin):
@@ -99,7 +103,7 @@ def _run(name, ins, path=""):
         return sub_out[owner][pin]
 
     def evaluate(sid):
-        sins = {p: val(*src) for (o, p), src in drv.items() if o == sid}
+        sins = {p: val(*src) for p, src in drv.get(sid, {}).items()}
         sub_out[sid] = run(subs[sid]["Name"], sins, path + "/" + subs[sid]["Name"] + "#" + str(sid))
         if NET_ON:
             NET[path + "/" + subs[sid]["Name"] + "#" + str(sid)] = dict(sub_out[sid])
@@ -109,7 +113,7 @@ def _run(name, ins, path=""):
             evaluate(sid)
     res = {}
     for p in d["OutputPins"]:
-        src = drv.get((p["ID"], 0))
+        src = drv.get(p["ID"], {}).get(0)
         res[p["ID"]] = val(*src) if src else None
     return res
 

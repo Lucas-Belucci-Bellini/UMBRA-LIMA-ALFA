@@ -1,10 +1,9 @@
 """Regressao: testes da calculadora nao podem gravar ou achatar Chips/.
 
 Executa os dois CLIs com open() proibido para escrita, confere hashes/mtime
-dos 12 chips e verifica --write numa pasta temporaria. No CLI aritmetico,
-substitui somente a avaliacao dos casos por um spy: gera todos os netlists,
-mas testa o contrato de arquivos, nao a aritmetica. Para a bateria aritmetica
-completa use build_calc.py. O roteiro de teclas e executado completo.
+dos 12 chips e verifica --write numa pasta temporaria. Tanto a bateria
+aritmetica quanto o roteiro de teclas sao executados completos, sem substituir
+o simulador nem os testes por resultados artificiais.
     python tools/ai_style/dbg_calc_no_write.py
 """
 import builtins
@@ -54,19 +53,10 @@ class NoWriteTest(unittest.TestCase):
                 raise AssertionError("dry-run tentou gravar: " + str(file))
             return real_open(file, mode, *args, **kwargs)
 
-        evaluated = []
-
-        def evaluation_spy(desc, predicate, cases):
-            self.assertTrue(callable(predicate) and cases)
-            evaluated.append(desc["Name"])
-            return 0  # Nao executa aritmetica neste teste de I/O.
-
-        with patch("builtins.open", side_effect=read_only), \
-                patch.object(BC, "test", side_effect=evaluation_spy):
+        with patch("builtins.open", side_effect=read_only):
             for module in (BC, B2):
                 with contextlib.redirect_stdout(io.StringIO()):
                     self.assertEqual(module.main(False), 0)
-        self.assertEqual(evaluated, ["ADD-17", "MUL-17", "DIV-17", "SQRT-17", "DD-17"])
         self.assertEqual(snapshot(), before, "dry-run alterou netlist ou mtime")
 
     def test_write_includes_dependencies_and_displays(self):
