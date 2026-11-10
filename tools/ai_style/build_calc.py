@@ -22,11 +22,21 @@ Sem --write so simula contra um modelo Python; com --write grava os JSONs.
 import os
 import random
 import sys
+import json
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from build_ram import Builder, CHIPS  # noqa: E402
 import dlssim as S  # noqa: E402
+
+
+def dff_pinmap():
+    """Pinos do DFF POR NOME.  Q eh out_pin criado por ultimo -> ID alto (13),
+    nunca 3.  Ligar (f,3) deixava o registro lendo pino inexistente no DLS."""
+    with open(os.path.join(CHIPS, "DFF.json"), encoding="utf-8") as f:
+        d = json.load(f)
+    return ({p["Name"]: p["ID"] for p in d["InputPins"]},
+            {p["Name"]: p["ID"] for p in d["OutputPins"]})
 
 MASK17 = (1 << 17) - 1
 
@@ -163,12 +173,13 @@ def build_reg17():
     din = triple_in(b, "D", 3)
     en, clk = b.in_pin("EN", 1, 2), b.in_pin("CLK", 1, 2)
     dout = triple_out(b, "Q", 4)
+    fim, fom = dff_pinmap()
     bits = []
     for bit in split_triple(b, *din):
-        f = b.sub("DFF")                    # DFF: D=1 CLK=2 Q=3
-        b.wire((clk, 0), (f, 2))
-        b.wire(mux2(b, (en, 0), (f, 3), bit), (f, 1))
-        bits.append((f, 3))
+        f = b.sub("DFF")                    # pinos por nome: D, CLK, Q(=13)
+        b.wire((clk, 0), (f, fim["CLK"]))
+        b.wire(mux2(b, (en, 0), (f, fom["Q"]), bit), (f, fim["D"]))
+        bits.append((f, fom["Q"]))
     wire_triple(b, merge_triple(b, bits), dout)
     return b.save()
 

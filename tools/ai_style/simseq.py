@@ -97,12 +97,22 @@ class SimSeq:
                 recv[(sid, 0)], recv[(sid, 1)] = [(n, 0)], [(n, 1)]
                 srcs[(sid, 2)] = n.outs
             elif nm == "DFF":
+                # DFF ideal (borda de subida).  Resolve os pinos POR NOME do
+                # DFF.json real: Q eh criado por ultimo e ganha ID alto (13),
+                # nao 3.  Hardcodar 3 ligava o pino errado no DLS de verdade.
+                if not hasattr(self, "_dff_pm"):
+                    with open(os.path.join(self.chips_dir, "DFF.json"),
+                              encoding="utf-8") as f:
+                        dd = json.load(f)
+                    self._dff_pm = {p["Name"]: p["ID"]
+                                    for p in dd["InputPins"] + dd["OutputPins"]}
+                pm = self._dff_pm
                 n = self.add(Node("dff", 2, 1, name=prefix + "DFF"))
                 n.outs[0] = self.sig()
                 n.meta["state"] = 0
                 n.meta["pclk"] = 0
-                recv[(sid, 1)], recv[(sid, 2)] = [(n, 0)], [(n, 1)]
-                srcs[(sid, 3)] = n.outs
+                recv[(sid, pm["D"])], recv[(sid, pm["CLK"])] = [(n, 0)], [(n, 1)]
+                srcs[(sid, pm["Q"])] = n.outs
                 self.dffs.append(n)
             elif nm == "CLOCK":
                 n = self.add(Node("src", 0, 1, name=prefix + "CLOCK"))

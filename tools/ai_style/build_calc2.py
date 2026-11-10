@@ -143,10 +143,10 @@ def build_keypad():
     for j in range(5):
         code.append(b.or_tree([k for i, k in enumerate(keys) if (i >> j) & 1]))
     any_ = b.or_tree(keys)
-    f = b.sub("DFF")
-    b.wire(any_, (f, 1))
-    b.wire((clk, 0), (f, 2))
-    b.wire(b.and2(any_, b.inv((f, 3))), (b.out_pin("KP", 1, 6), 0))
+    f, fim, fom = sub(b, "DFF")
+    b.wire(any_, (f, fim["D"]))
+    b.wire((clk, 0), (f, fim["CLK"]))
+    b.wire(b.and2(any_, b.inv((f, fom["Q"]))), (b.out_pin("KP", 1, 6), 0))
     for j in range(5):
         b.wire(code[j], (b.out_pin("KC" + str(j), 1, 3), 0))
     return reg(b.save())
@@ -210,13 +210,13 @@ def build_core():
     w3(b, merge_triple(b, Xs), al, imL, "B")
     # OPSEL: binarios usam codigo 10..13 -> seletor 0..3, ou seja OP0=k0 e
     # OP1=k2 (NAO k1).  '=' replay o registro; unario usa 4+(k1,k0).
-    opr0 = b.sub("DFF")
-    opr1 = b.sub("DFF")
-    b.wire(clk, (opr0, 2)); b.wire(clk, (opr1, 2))
-    b.wire(mux2(b, b.and2(kp, binop), (opr0, 3), k0), (opr0, 1))
-    b.wire(mux2(b, b.and2(kp, binop), (opr1, 3), k2), (opr1, 1))
-    s0 = b.or2(b.and2(eq, (opr0, 3)), b.and2(unary, k0))
-    s1 = b.or2(b.and2(eq, (opr1, 3)), b.and2(unary, k1))
+    opr0, o0im, o0om = sub(b, "DFF")
+    opr1, o1im, o1om = sub(b, "DFF")
+    b.wire(clk, (opr0, o0im["CLK"])); b.wire(clk, (opr1, o1im["CLK"]))
+    b.wire(mux2(b, b.and2(kp, binop), (opr0, o0om["Q"]), k0), (opr0, o0im["D"]))
+    b.wire(mux2(b, b.and2(kp, binop), (opr1, o1om["Q"]), k2), (opr1, o1im["D"]))
+    s0 = b.or2(b.and2(eq, (opr0, o0om["Q"])), b.and2(unary, k0))
+    s1 = b.or2(b.and2(eq, (opr1, o1om["Q"])), b.and2(unary, k1))
     s2 = unary
     b.wire(s0, (al, imL["OP0"]))
     b.wire(s1, (al, imL["OP1"]))
@@ -224,18 +224,18 @@ def build_core():
     Rs = split_triple(b, *r3(al, omL, "R"))
     aerr = (al, omL["ERR"])
 
-    pend = b.sub("DFF")
-    b.wire(clk, (pend, 2))
-    b.wire(mux2(b, b.and2(kp, b.or2(b.or2(binop, eq), clr)), (pend, 3), binop),
-           (pend, 1))
-    errf = b.sub("DFF")
-    b.wire(clk, (errf, 2))
+    pend, pim, pom = sub(b, "DFF")
+    b.wire(clk, (pend, pim["CLK"]))
+    b.wire(mux2(b, b.and2(kp, b.or2(b.or2(binop, eq), clr)), (pend, pom["Q"]), binop),
+           (pend, pim["D"]))
+    errf, eim, eom = sub(b, "DFF")
+    b.wire(clk, (errf, eim["CLK"]))
     den = b.and2(kp, b.or2(b.or2(eq, recu), clr))
-    b.wire(mux2(b, den, (errf, 3), b.and2(aerr, b.and2(b.or2(eq, recu), b.inv(clr)))),
-           (errf, 1))
+    b.wire(mux2(b, den, (errf, eom["Q"]), b.and2(aerr, b.and2(b.or2(eq, recu), b.inv(clr)))),
+           (errf, eim["D"]))
 
     # D de X: digito -> accv; binop/clr -> 0; unario -> R; '=' com pend -> R
-    useR = b.or2(unary, b.and2(eq, (pend, 3)))
+    useR = b.or2(unary, b.and2(eq, (pend, pom["Q"])))
     zsel = b.or2(binop, clr)                 # zera X ao iniciar operando ou C
     DX = [mux2(b, digit, mux2(b, useR, mux2(b, zsel, Xs[i], zero), Rs[i]),
                accv[i]) for i in range(17)]
@@ -248,7 +248,7 @@ def build_core():
     w3(b, X, dd, imD, "A")
     for i in range(5):
         b.wire((dd, omD["D" + str(i)]), (b.out_pin("D" + str(i), 4, 4, 1), 0))
-    b.wire((errf, 3), (b.out_pin("ERR", 1, 1), 0))
+    b.wire((errf, eom["Q"]), (b.out_pin("ERR", 1, 1), 0))
     wire_triple(b, X, triple_out(b, "X", 4))
     for nm, sig in (("DBG_DIG", digit), ("DBG_SAT", sat), ("DBG_ACC0", acc[0]),
                     ("DBG_ACCV0", accv[0]), ("DBG_DX0", DX[0]), ("DBG_KP", kp),
