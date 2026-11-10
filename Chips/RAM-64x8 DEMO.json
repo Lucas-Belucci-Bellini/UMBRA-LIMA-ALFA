@@ -1,240 +1,280 @@
 {
- "DLSVersion": "2.1.6",
- "Name": "RAM-64x8 DEMO",
- "NameLocation": 0,
- "ChipType": 0,
- "Size": {
-  "x": 2.0,
-  "y": 2.0
- },
- "Colour": {
-  "r": 0.3,
-  "g": 0.55,
-  "b": 0.45,
-  "a": 1
- },
- "InputPins": [
-  {
-   "Name": "ENDERECO",
-   "ID": 1,
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "BitCount": 8,
-   "Colour": 4,
-   "ValueDisplayMode": 1
+  "DLSVersion": "2.1.6",
+  "Name": "RAM-64x8 DEMO",
+  "NameLocation": 0,
+  "ChipType": 0,
+  "Size": {
+    "x": 2.0,
+    "y": 2.0
   },
-  {
-   "Name": "DADO IN",
-   "ID": 2,
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "BitCount": 8,
-   "Colour": 3,
-   "ValueDisplayMode": 1
+  "Colour": {
+    "r": 0.3,
+    "g": 0.55,
+    "b": 0.45,
+    "a": 1
   },
-  {
-   "Name": "CLK",
-   "ID": 3,
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "BitCount": 1,
-   "Colour": 2,
-   "ValueDisplayMode": 0
-  },
-  {
-   "Name": "ESCREVER",
-   "ID": 4,
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "BitCount": 1,
-   "Colour": 0,
-   "ValueDisplayMode": 0
-  }
- ],
- "OutputPins": [
-  {
-   "Name": "DADO OUT",
-   "ID": 5,
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "BitCount": 8,
-   "Colour": 3,
-   "ValueDisplayMode": 1
-  }
- ],
- "SubChips": [
-  {
-   "Name": "RAM-64x8",
-   "ID": 6,
-   "Label": "",
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "OutputPinColourInfo": [],
-   "InternalData": null
-  },
-  {
-   "Name": "NAND",
-   "ID": 7,
-   "Label": "",
-   "Position": {
-    "x": 0.0,
-    "y": 0.0
-   },
-   "OutputPinColourInfo": [],
-   "InternalData": null
-  }
- ],
- "Wires": [
-  {
-   "SourcePinAddress": {
-    "PinID": 0,
-    "PinOwnerID": 1
-   },
-   "TargetPinAddress": {
-    "PinID": 1,
-    "PinOwnerID": 6
-   },
-   "ConnectionType": 0,
-   "ConnectedWireIndex": -1,
-   "ConnectedWireSegmentIndex": -1,
-   "Points": [
+  "InputPins": [
     {
-     "x": 0,
-     "y": 0
+      "Name": "ENDERECO",
+      "ID": 1,
+      "Position": {
+        "x": -2.5,
+        "y": 2.0938
+      },
+      "BitCount": 8,
+      "Colour": 4,
+      "ValueDisplayMode": 1
     },
     {
-     "x": 0,
-     "y": 0
-    }
-   ]
-  },
-  {
-   "SourcePinAddress": {
-    "PinID": 0,
-    "PinOwnerID": 2
-   },
-   "TargetPinAddress": {
-    "PinID": 2,
-    "PinOwnerID": 6
-   },
-   "ConnectionType": 0,
-   "ConnectedWireIndex": -1,
-   "ConnectedWireSegmentIndex": -1,
-   "Points": [
-    {
-     "x": 0,
-     "y": 0
+      "Name": "DADO IN",
+      "ID": 2,
+      "Position": {
+        "x": -2.5,
+        "y": 0.8438
+      },
+      "BitCount": 8,
+      "Colour": 3,
+      "ValueDisplayMode": 1
     },
     {
-     "x": 0,
-     "y": 0
-    }
-   ]
-  },
-  {
-   "SourcePinAddress": {
-    "PinID": 0,
-    "PinOwnerID": 3
-   },
-   "TargetPinAddress": {
-    "PinID": 3,
-    "PinOwnerID": 6
-   },
-   "ConnectionType": 0,
-   "ConnectedWireIndex": -1,
-   "ConnectedWireSegmentIndex": -1,
-   "Points": [
-    {
-     "x": 0,
-     "y": 0
+      "Name": "CLK",
+      "ID": 3,
+      "Position": {
+        "x": -2.5,
+        "y": -0.2188
+      },
+      "BitCount": 1,
+      "Colour": 2,
+      "ValueDisplayMode": 0
     },
     {
-     "x": 0,
-     "y": 0
+      "Name": "ESCREVER",
+      "ID": 4,
+      "Position": {
+        "x": -2.5,
+        "y": -1.0938
+      },
+      "BitCount": 1,
+      "Colour": 0,
+      "ValueDisplayMode": 0
     }
-   ]
-  },
-  {
-   "SourcePinAddress": {
-    "PinID": 0,
-    "PinOwnerID": 4
-   },
-   "TargetPinAddress": {
-    "PinID": 4,
-    "PinOwnerID": 6
-   },
-   "ConnectionType": 0,
-   "ConnectedWireIndex": -1,
-   "ConnectedWireSegmentIndex": -1,
-   "Points": [
+  ],
+  "OutputPins": [
     {
-     "x": 0,
-     "y": 0
+      "Name": "DADO OUT",
+      "ID": 5,
+      "Position": {
+        "x": 2.75,
+        "y": 0.0562
+      },
+      "BitCount": 8,
+      "Colour": 3,
+      "ValueDisplayMode": 1
+    }
+  ],
+  "SubChips": [
+    {
+      "Name": "RAM-64x8",
+      "ID": 6,
+      "Label": "",
+      "Position": {
+        "x": 0.5,
+        "y": 0.0562
+      },
+      "OutputPinColourInfo": [],
+      "InternalData": null
     },
     {
-     "x": 0,
-     "y": 0
+      "Name": "NAND",
+      "ID": 7,
+      "Label": "",
+      "Position": {
+        "x": -2.5,
+        "y": -2.0938
+      },
+      "OutputPinColourInfo": [],
+      "InternalData": null
     }
-   ]
-  },
-  {
-   "SourcePinAddress": {
-    "PinID": 2,
-    "PinOwnerID": 7
-   },
-   "TargetPinAddress": {
-    "PinID": 5,
-    "PinOwnerID": 6
-   },
-   "ConnectionType": 0,
-   "ConnectedWireIndex": -1,
-   "ConnectedWireSegmentIndex": -1,
-   "Points": [
+  ],
+  "Wires": [
     {
-     "x": 0,
-     "y": 0
+      "SourcePinAddress": {
+        "PinID": 0,
+        "PinOwnerID": 1
+      },
+      "TargetPinAddress": {
+        "PinID": 1,
+        "PinOwnerID": 6
+      },
+      "ConnectionType": 0,
+      "ConnectedWireIndex": -1,
+      "ConnectedWireSegmentIndex": -1,
+      "Points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": -1.0,
+          "y": 2.0938
+        },
+        {
+          "x": -1.0,
+          "y": 0.8063
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
     },
     {
-     "x": 0,
-     "y": 0
-    }
-   ]
-  },
-  {
-   "SourcePinAddress": {
-    "PinID": 6,
-    "PinOwnerID": 6
-   },
-   "TargetPinAddress": {
-    "PinID": 0,
-    "PinOwnerID": 5
-   },
-   "ConnectionType": 0,
-   "ConnectedWireIndex": -1,
-   "ConnectedWireSegmentIndex": -1,
-   "Points": [
-    {
-     "x": 0,
-     "y": 0
+      "SourcePinAddress": {
+        "PinID": 0,
+        "PinOwnerID": 2
+      },
+      "TargetPinAddress": {
+        "PinID": 2,
+        "PinOwnerID": 6
+      },
+      "ConnectionType": 0,
+      "ConnectedWireIndex": -1,
+      "ConnectedWireSegmentIndex": -1,
+      "Points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": -1.125,
+          "y": 0.8438
+        },
+        {
+          "x": -1.125,
+          "y": 0.2438
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
     },
     {
-     "x": 0,
-     "y": 0
+      "SourcePinAddress": {
+        "PinID": 0,
+        "PinOwnerID": 3
+      },
+      "TargetPinAddress": {
+        "PinID": 3,
+        "PinOwnerID": 6
+      },
+      "ConnectionType": 0,
+      "ConnectedWireIndex": -1,
+      "ConnectedWireSegmentIndex": -1,
+      "Points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": -1.5,
+          "y": -0.2188
+        },
+        {
+          "x": -1.5,
+          "y": -0.1938
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "SourcePinAddress": {
+        "PinID": 0,
+        "PinOwnerID": 4
+      },
+      "TargetPinAddress": {
+        "PinID": 4,
+        "PinOwnerID": 6
+      },
+      "ConnectionType": 0,
+      "ConnectedWireIndex": -1,
+      "ConnectedWireSegmentIndex": -1,
+      "Points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": -1.375,
+          "y": -1.0938
+        },
+        {
+          "x": -1.375,
+          "y": -0.5062
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "SourcePinAddress": {
+        "PinID": 2,
+        "PinOwnerID": 7
+      },
+      "TargetPinAddress": {
+        "PinID": 5,
+        "PinOwnerID": 6
+      },
+      "ConnectionType": 0,
+      "ConnectedWireIndex": -1,
+      "ConnectedWireSegmentIndex": -1,
+      "Points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": -1.25,
+          "y": -2.0938
+        },
+        {
+          "x": -1.25,
+          "y": -0.8187
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "SourcePinAddress": {
+        "PinID": 6,
+        "PinOwnerID": 6
+      },
+      "TargetPinAddress": {
+        "PinID": 0,
+        "PinOwnerID": 5
+      },
+      "ConnectionType": 0,
+      "ConnectedWireIndex": -1,
+      "ConnectedWireSegmentIndex": -1,
+      "Points": [
+        {
+          "x": 0,
+          "y": 0
+        },
+        {
+          "x": 0,
+          "y": 0
+        }
+      ]
     }
-   ]
-  }
- ],
- "Displays": []
+  ],
+  "Displays": []
 }
