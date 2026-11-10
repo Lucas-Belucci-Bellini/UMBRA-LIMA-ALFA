@@ -12,7 +12,20 @@ no DLS fio liga pino inteiro: para abrir um barramento usa-se 8-1BIT / 1-4BIT /
 1-8BIT, como em qualquer chip do catalogo. Composicao por subchip (nao por
 copia): cada arquivo fica pequeno.
 
+TETO PRATICO (PC de 16 GB).  O arquivo e minusculo porque o DLS referencia
+subchips por NOME, mas ao ABRIR um chip ele instancia a arvore inteira.  As
+portas achatadas crescem 16x por nivel: 4Kx8 ~373 mil (abre), 64Kx8 ~6 milhoes
+(pesado), 1Mx8 ~95 milhoes e 1Gx8 ~97,76 BILHOES (impossivel: precisaria de
+terabytes de RAM).  RAM-1Gx8 e um netlist VALIDO de 1 GB (2^30 bytes) que existe
+e esta correto, mas o DLS nao consegue instancia-lo nesta maquina — e o limite
+fisico, nao um defeito.  Use 16x8/64x8/256x8/4Kx8 para abrir e simular.
+
+Verificacao funcional: dbg_ram.py (simseq com settling de latch) le/escreve
+16x8/64x8/256x8.  Layout: relayout_ram.py --write (build_ram deixa flat).
+
   python tools/ai_style/build_ram.py
+  python tools/ai_style/relayout_ram.py --write
+  python tools/ai_style/dbg_ram.py
 """
 
 import json
@@ -341,6 +354,9 @@ def report():
               % (row[0], row[1], row[2], row[3], row[4],
                  "{:,}".format(row[5]).replace(",", "."), row[6]))
         linhas.append(row)
+    print("\nTeto pratico (16 GB): abre ate RAM-4Kx8; 64Kx8 pesado; "
+          "1Mx8+ impossivel.\nRAM-1Gx8 = 1 GB valido (~97,76 bi de portas, "
+          "arquivo 92 KB), mas o DLS nao instancia nesta maquina.")
     return linhas
 
 
