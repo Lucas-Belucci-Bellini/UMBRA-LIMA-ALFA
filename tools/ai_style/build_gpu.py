@@ -11,9 +11,11 @@
                VIDEO serie + HSYNC (inicio de linha) + VSYNC (inicio de quadro)
              - saidas R0..R7 (framebuffer), VIDEO, HSYNC, VSYNC
 
-Tudo simulavel no simseq (LED/DFF/1-8BIT suportados; BIT-CELL assenta por
-ponto fixo).  Abre no DLS (~2 mil portas).  Workflow:
-    python build_gpu.py && python relayout_ram.py --write  # (FB/GPU via relayout)
+Testes no simseq (LED/DFF/1-8BIT suportados; BIT-CELL assenta por ponto
+fixo). Modelo sem atrasos: nao valida partida/transitorios no motor DLS.
+Layout do painel LED 8x8: relayout_gpu.py. Workflow:
+    python build_gpu.py
+    python relayout_gpu.py --name FB-8x8 --name GPU-MONO --write
     python dbg_gpu.py
 
 Pinos de filho resolvidos POR NOME (BIT-CELL Q=11, DFF Q=13).

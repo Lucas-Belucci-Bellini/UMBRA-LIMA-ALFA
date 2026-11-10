@@ -274,7 +274,9 @@ class SimSeq:
             seen = set()
             for s in n.ins:
                 d = drv.get(s) if s is not None else None
-                if d is not None and id(d) not in seen:
+                # Fontes e DFFs ja sao semeados por eval(): nao entram no
+                # grafo combinacional, nem bloqueiam suas portas dependentes.
+                if d is not None and d.kind in ("nand", "copy") and id(d) not in seen:
                     seen.add(id(d))
                     adj.setdefault(id(d), []).append(n)
                     indeg[id(n)] += 1
@@ -302,12 +304,11 @@ class SimSeq:
         self.drv = drv
 
     def eval(self, settle=64):
-        """Semeia fontes/DFF e avalia a nuvem combinacional.
+        """Semeia fontes/DFF e assenta NANDs/copias por ponto fixo.
 
-        `settle` iteracoes ate estabilizar: circuitos aciclicos (a calculadora)
-        convergem em 1 passada e a 2a nao muda nada -> para cedo.  Latches
-        (BIT-CELL = NANDs cruzados) formam ciclo; iterar a partir de self.cur
-        (que retém o estado anterior) os resolve e preserva a memoria no hold.
+        Latches permanecem como NANDs cruzados reais no netlist, sem detector
+        ou substituicao por latch ideal. O estado anterior e retido em cur.
+        Este modelo sem atrasos nao prova comportamento temporal no DLS.
         """
         cur = self.cur
         for n in self.nodes:
@@ -335,10 +336,16 @@ class SimSeq:
                             cur[s] = nv
                             changed = True
             if not changed:
-                break
+                return
+        raise RuntimeError(f"netlist nao convergiu em {settle} passadas")
 
 
     def tick(self):
+        """Captura a borda; eval() depois expoe as saidas do estado capturado.
+
+        Por compatibilidade, o readback imediato ainda reflete a avaliacao
+        anterior a captura. Testes que observam o estado novo usam tick+eval.
+        """
         clks = self.clocks or ([self.ext_in["CLK"]] if "CLK" in self.ext_in
                                else [])
         for c in clks:
