@@ -116,6 +116,29 @@ class Builder:
         return d
 
 
+REG = {}          # nome do chip -> desc, para resolver pinos de filho por nome
+
+
+def _reg(d):
+    REG[d["Name"]] = d
+    return d
+
+
+def subc(b, name):
+    """Cria o subchip e devolve (sid, {nome->id} entradas, {nome->id} saidas).
+
+    Os IDs de pino de um chip custom sao atribuidos na ORDEM DE CRIACAO
+    (in_pin/out_pin/sub chamam nid()).  Um out_pin criado por ultimo ganha um
+    ID alto — no BIT-CELL, D=1 G=2 RSEL=3 mas Q=11.  Ligar um filho com
+    indices fixos como (cell,0) fica errado; resolva sempre pelo NOME do pino.
+    """
+    sid = b.sub(name)
+    d = REG[name]
+    return (sid,
+            {p["Name"]: p["ID"] for p in d["InputPins"]},
+            {p["Name"]: p["ID"] for p in d["OutputPins"]})
+
+
 def build_bit_cell():
     b = Builder("BIT-CELL", (0.35, 0.55, 0.75))
     d = b.in_pin("D", 1, 3)
@@ -133,7 +156,8 @@ def build_bit_cell():
     qo = b.and2((qn, 2), (rs, 0))  # leitura porta-da
     out = b.out_pin("Q", 1, 3)
     b.wire(qo, (out, 0))
-    b.save()
+    return _reg(b.save())
+
 
 
 def decode(b, bits, en):
@@ -150,15 +174,16 @@ def decode(b, bits, en):
 
 
 def build_ram16():
+    """Folha: RAM-16x8 = 16 bytes, endereco A0 (8 bits, usa os 4 baixos)."""
     b = Builder("RAM-16x8", (0.45, 0.35, 0.65))
-    addr = b.in_pin("ADDR", 8, 4, 1)
+    a0 = b.in_pin("A0", 8, 4, 1)
     din = b.in_pin("DIN", 8, 3, 1)
     clk = b.in_pin("CLK", 1, 2)
     we = b.in_pin("WE", 1, 0)
     cs = b.in_pin("CS", 1, 5)
     dout = b.out_pin("DOUT", 8, 3, 1)
 
-    ab = b.split8((addr, 0))[:4]
+    ab = b.split8((a0, 0))[:4]
     db = b.split8((din, 0))
     wen = b.and2(b.and2((we, 0), (clk, 0)), (cs, 0))
     rows = decode(b, ab, None)
@@ -168,72 +193,158 @@ def build_ram16():
     for c in range(8):
         reads = []
         for r in range(16):
-            cell = b.sub("BIT-CELL")
-            b.wire(db[c], (cell, 0))
-            b.wire(wsel[r], (cell, 1))
-            b.wire(rsel[r], (cell, 2))
-            reads.append((cell, 3))
+            cell, cim, com = subc(b, "BIT-CELL")
+            b.wire(db[c], (cell, cim["D"]))
+            b.wire(wsel[r], (cell, cim["G"]))
+            b.wire(rsel[r], (cell, cim["RSEL"]))
+            reads.append((cell, com["Q"]))
         b.wire(b.or_tree(reads), (mg, 7 - c))
     b.wire((mg, 8), (dout, 0))
-    b.save()
+    return _reg(b.save())
 
 
-def build_bank(name, child, high_bits, colour):
-    """RAM-64x8 (high=2) e RAM-256x8 (high=4) por composicao."""
+
+def build_level(name, child, ac, nsel, colour):
+    """Nivel de bancada: 2^nsel bancos de `child` (composicao por subchip).
+
+    ac   = bits de endereco do filho (filho endereca 2^ac bytes)
+    nsel = bits de selecao de banco deste nivel (4 -> 16 bancos, 2 -> 4)
+    Este nivel endereca 2^(ac+nsel) bytes.
+
+    Endereco em pinos de 8 bits A0..A(n-1): no DLS fio liga pino inteiro de
+    mesma largura, entao >8 bits usa varios pinos.  A selecao de banco vem do
+    pino A[ac//8], bits [ac%8 : ac%8+nsel] — que NUNCA sobrepoe os bits que o
+    filho usa (o bug antigo fixava o offset em 4 e aliasava os niveis).  Os
+    pinos baixos A0..A(childpins-1) descem intactos para cada banco; o DOUT de
+    cada banco e aberto em 8 fios e a leitura e uma arvore OR (banco nao
+    selecionado tem CS=0 -> DOUT=0).
+    """
+    child_pins = (ac + 7) // 8
+    lvl_bits = ac + nsel
+    lvl_pins = (lvl_bits + 7) // 8
+    sel_pin = ac // 8
+    sel_lo = ac % 8
+    nb = 1 << nsel
+
     b = Builder(name, colour)
-    addr = b.in_pin("ADDR", 8, 4, 1)
+    A = [b.in_pin("A" + str(i), 8, 4, 1) for i in range(lvl_pins)]
     din = b.in_pin("DIN", 8, 3, 1)
     clk = b.in_pin("CLK", 1, 2)
     we = b.in_pin("WE", 1, 0)
     cs = b.in_pin("CS", 1, 5)
     dout = b.out_pin("DOUT", 8, 3, 1)
 
-    ab = b.split8((addr, 0))
-    hb = ab[4:4 + high_bits]
-    banks = decode(b, hb, (cs, 0))
-    rams = []
+    sb = b.split8((A[sel_pin], 0))
+    banks = decode(b, sb[sel_lo:sel_lo + nsel], (cs, 0))
+
     outs = []
-    for bsel in banks:
-        ram = b.sub(child)
-        b.wire((addr, 0), (ram, 1))
-        b.wire((din, 0), (ram, 2))
-        b.wire((clk, 0), (ram, 3))
-        b.wire((we, 0), (ram, 4))
-        b.wire(bsel, (ram, 5))
-        rams.append(ram)
-        outs.append(b.split8((ram, 6)))      # abre o DOUT(8) do banco em 8 fios 1-bit
+    for bi in range(nb):
+        ram, rim, rom = subc(b, child)
+        for i in range(child_pins):
+            b.wire((A[i], 0), (ram, rim["A" + str(i)]))
+        b.wire((din, 0), (ram, rim["DIN"]))
+        b.wire((clk, 0), (ram, rim["CLK"]))
+        b.wire((we, 0), (ram, rim["WE"]))
+        b.wire(banks[bi], (ram, rim["CS"]))
+        outs.append(b.split8((ram, rom["DOUT"])))
     mg = b.sub("1-8BIT")
     for c in range(8):
         b.wire(b.or_tree([o[c] for o in outs]), (mg, 7 - c))
     b.wire((mg, 8), (dout, 0))
-    b.save()
+    return _reg(b.save())
+
 
 
 def build_demo():
+    """Bancada de teste em cima da RAM-64x8 (pinos amigaveis, CS sempre 1)."""
     b = Builder("RAM-64x8 DEMO", (0.30, 0.55, 0.45))
     addr = b.in_pin("ENDERECO", 8, 4, 1)
     din = b.in_pin("DADO IN", 8, 3, 1)
     clk = b.in_pin("CLK", 1, 2)
     we = b.in_pin("ESCREVER", 1, 0)
     dout = b.out_pin("DADO OUT", 8, 3, 1)
-    ram = b.sub("RAM-64x8")
-    b.wire((addr, 0), (ram, 1))
-    b.wire((din, 0), (ram, 2))
-    b.wire((clk, 0), (ram, 3))
-    b.wire((we, 0), (ram, 4))
-    b.wire(b.const1(), (ram, 5))
-    b.wire((ram, 6), (dout, 0))
-    b.save()
+    ram, rim, rom = subc(b, "RAM-64x8")
+    b.wire((addr, 0), (ram, rim["A0"]))
+    b.wire((din, 0), (ram, rim["DIN"]))
+    b.wire((clk, 0), (ram, rim["CLK"]))
+    b.wire((we, 0), (ram, rim["WE"]))
+    b.wire(b.const1(), (ram, rim["CS"]))
+    b.wire((ram, rom["DOUT"]), (dout, 0))
+    return _reg(b.save())
+
+
+# cadeia completa: cada nivel 16x o anterior (o ultimo 4x) -> 2^30 bytes = 1 GB
+CADEIA = [
+    # (nome,            filho,        ac, nsel, cor)
+    ("RAM-16x8",   None,        None, None, None),          # folha
+    ("RAM-64x8",   "RAM-16x8",    4,   2, (0.55, 0.35, 0.45)),
+    ("RAM-256x8",  "RAM-16x8",    4,   4, (0.35, 0.45, 0.55)),
+    ("RAM-4Kx8",   "RAM-256x8",   8,   4, (0.40, 0.50, 0.45)),
+    ("RAM-64Kx8",  "RAM-4Kx8",   12,   4, (0.50, 0.45, 0.40)),
+    ("RAM-1Mx8",   "RAM-64Kx8",  16,   4, (0.45, 0.40, 0.55)),
+    ("RAM-16Mx8",  "RAM-1Mx8",   20,   4, (0.40, 0.45, 0.55)),
+    ("RAM-256Mx8", "RAM-16Mx8",  24,   4, (0.55, 0.40, 0.45)),
+    ("RAM-1Gx8",   "RAM-256Mx8", 28,   2, (0.35, 0.55, 0.50)),
+]
+CAP = {"BIT-CELL": 0, "RAM-16x8": 16, "RAM-64x8": 64, "RAM-256x8": 256,
+       "RAM-4Kx8": 1 << 12, "RAM-64Kx8": 1 << 16, "RAM-1Mx8": 1 << 20,
+       "RAM-16Mx8": 1 << 24, "RAM-256Mx8": 1 << 28, "RAM-1Gx8": 1 << 30,
+       "RAM-64x8 DEMO": 64}
+BUILTIN_GATES = {"NAND": 1}     # os demais builtins sao fios/leitura (0 portas)
+
+
+def build_all():
+    build_bit_cell()
+    for nome, filho, ac, nsel, cor in CADEIA:
+        if filho is None:
+            build_ram16()
+        else:
+            build_level(nome, filho, ac, nsel, cor)
+    build_demo()
+
+
+def flat_gates(name, memo=None):
+    """Portas NAND de uma instancia ACHATADA de `name` (recursao por subchip)."""
+    if memo is None:
+        memo = {}
+    if name in memo:
+        return memo[name]
+    d = REG.get(name)
+    if d is None:
+        memo[name] = BUILTIN_GATES.get(name, 0)
+        return memo[name]
+    memo[name] = 0
+    tot = 0
+    for s in d["SubChips"]:
+        tot += flat_gates(s["Name"], memo)
+    memo[name] = tot
+    return tot
+
+
+def report():
+    memo = {}
+    linhas = []
+    hdr = ("chip", "bytes", "subchips", "fios", "arquivo", "portas", "abre?")
+    print("\n%-13s %11s %9s %8s %10s %15s %s" % hdr)
+    ordem = ["BIT-CELL"] + [c[0] for c in CADEIA] + ["RAM-64x8 DEMO"]
+    for n in ordem:
+        d = REG[n]
+        sz = os.path.getsize(os.path.join(CHIPS, n + ".json"))
+        g = flat_gates(n, memo)
+        cap = CAP.get(n, 0)
+        # estimativa conservadora p/ 16 GB: ate ~5M portas abre, ~50M pesado
+        abre = "sim" if g <= 5_000_000 else ("pesado" if g <= 60_000_000
+                                             else "NAO (falta RAM)")
+        capstr = ("{:,}".format(cap).replace(",", ".")) if cap else "-"
+        row = (n, capstr, len(d["SubChips"]), len(d["Wires"]), sz, g, abre)
+        print("%-13s %11s %9d %8d %9dB %15s %s"
+              % (row[0], row[1], row[2], row[3], row[4],
+                 "{:,}".format(row[5]).replace(",", "."), row[6]))
+        linhas.append(row)
+    return linhas
 
 
 if __name__ == "__main__":
-    build_bit_cell()
-    build_ram16()
-    build_bank("RAM-64x8", "RAM-16x8", 2, (0.55, 0.35, 0.45))
-    build_bank("RAM-256x8", "RAM-64x8", 4, (0.35, 0.45, 0.55))
-    build_demo()
-    for n in ("BIT-CELL", "RAM-16x8", "RAM-64x8", "RAM-256x8", "RAM-64x8 DEMO"):
-        d = json.load(open(os.path.join(CHIPS, n + ".json"), encoding="utf-8"))
-        print("%-14s subchips=%5d fios=%5d pinos=%d/%d"
-              % (n, len(d["SubChips"]), len(d["Wires"]),
-                 len(d["InputPins"]), len(d["OutputPins"])))
+    build_all()
+    report()
+

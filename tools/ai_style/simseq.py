@@ -243,16 +243,24 @@ class SimSeq:
 
     # ---------------------------------------------------------------- eval
     def _topo(self):
+        """Ordem de avaliacao dos nos nand/copy.
+
+        Kahn puro DESCARTA nos em ciclo e tudo que esta a jusante deles: o
+        BIT-CELL (NANDs cruzados) forma ciclo, entao o latch inteiro e a arvore
+        de leitura sumiriam da ordem e DOUT ficaria sempre 0.  Aqui, quando o
+        Kahn trava, forcamos a entrada de um no ainda nao colocado (quebrando o
+        ciclo) e continuamos; assim TODOS os nand/copy entram na ordem.  A
+        realimentacao converge por iteracao de ponto fixo em eval().
+        """
         drv = {}
         for n in self.nodes:
             for s in n.outs:
                 if s:
                     drv[s] = n
+        ev = [n for n in self.nodes if n.kind in ("nand", "copy")]
         indeg = {id(n): 0 for n in self.nodes}
         adj = {}
-        for n in self.nodes:
-            if n.kind in ("dff", "src", "seg"):
-                continue
+        for n in ev:
             seen = set()
             for s in n.ins:
                 d = drv.get(s) if s is not None else None
@@ -260,21 +268,37 @@ class SimSeq:
                     seen.add(id(d))
                     adj.setdefault(id(d), []).append(n)
                     indeg[id(n)] += 1
-        order = [n for n in self.nodes if indeg[id(n)] == 0 and n.kind not in ("seg",)]
-        self.order = []
-        i = 0
-        while i < len(order):
-            n = order[i]
-            i += 1
-            if n.kind != "src":
-                self.order.append(n)
-            for m in adj.get(id(n), []):
-                indeg[id(m)] -= 1
-                if indeg[id(m)] == 0:
-                    order.append(m)
+        order = []
+        placed = set()
+        ready = [n for n in ev if indeg[id(n)] == 0]
+        total = len(ev)
+        while len(placed) < total:
+            while ready:
+                n = ready.pop()
+                if id(n) in placed:
+                    continue
+                order.append(n)
+                placed.add(id(n))
+                for m in adj.get(id(n), []):
+                    indeg[id(m)] -= 1
+                    if indeg[id(m)] == 0 and id(m) not in placed:
+                        ready.append(m)
+            if len(placed) < total:      # ciclo: força um no e retoma o Kahn
+                for n in ev:
+                    if id(n) not in placed:
+                        ready.append(n)
+                        break
+        self.order = order
         self.drv = drv
 
-    def eval(self):
+    def eval(self, settle=64):
+        """Semeia fontes/DFF e avalia a nuvem combinacional.
+
+        `settle` iteracoes ate estabilizar: circuitos aciclicos (a calculadora)
+        convergem em 1 passada e a 2a nao muda nada -> para cedo.  Latches
+        (BIT-CELL = NANDs cruzados) formam ciclo; iterar a partir de self.cur
+        (que retém o estado anterior) os resolve e preserva a memoria no hold.
+        """
         cur = self.cur
         for n in self.nodes:
             if n.kind == "src":
@@ -283,15 +307,26 @@ class SimSeq:
                     cur[s] = (v >> i) & 1
             elif n.kind == "dff":
                 cur[n.outs[0]] = n.meta["state"]
-        for n in self.order:
-            if n.kind == "nand":
-                a = cur[n.ins[0]] if n.ins[0] else 0
-                b = cur[n.ins[1]] if n.ins[1] else 0
-                cur[n.outs[0]] = 0 if (a and b) else 1
-            elif n.kind == "copy":
-                for i, s in enumerate(n.outs):
-                    j = n.perm[i]
-                    cur[s] = cur[n.ins[j]] if (j < len(n.ins) and n.ins[j]) else 0
+        for _ in range(settle):
+            changed = False
+            for n in self.order:
+                if n.kind == "nand":
+                    a = cur[n.ins[0]] if n.ins[0] else 0
+                    bb = cur[n.ins[1]] if n.ins[1] else 0
+                    nv = 0 if (a and bb) else 1
+                    if cur[n.outs[0]] != nv:
+                        cur[n.outs[0]] = nv
+                        changed = True
+                elif n.kind == "copy":
+                    for i, s in enumerate(n.outs):
+                        j = n.perm[i]
+                        nv = cur[n.ins[j]] if (j < len(n.ins) and n.ins[j]) else 0
+                        if cur[s] != nv:
+                            cur[s] = nv
+                            changed = True
+            if not changed:
+                break
+
 
     def tick(self):
         clks = self.clocks or ([self.ext_in["CLK"]] if "CLK" in self.ext_in
