@@ -159,12 +159,16 @@ def render_svg(d, scale, pad=40):
         if not a or not b:
             continue
         col = rgb(STATE_HIGH[net_colour(d, sub, w) % 8])
-        seq = [a]
+        # ConnectionType 1 = fio sai de cima de outro fio (sem pino de origem desenhado)
+        # ConnectionType 2 = fio termina em cima de outro fio (sem pino de destino desenhado)
+        ct = w.get("ConnectionType", 0)
+        seq = [] if ct == 1 else [a]
         for pt in w.get("Points", []):
             if pt["x"] == 0 and pt["y"] == 0:
                 continue
             seq.append((pt["x"], pt["y"]))
-        seq.append(b)
+        if ct != 2:
+            seq.append(b)
         s = " ".join("%.1f,%.1f" % T(x, y) for x, y in seq)
         out.append(f'<polyline points="{s}" fill="none" stroke="{col}" '
                    f'stroke-width="{max(1.6, 0.025*scale):.1f}" stroke-linejoin="round" stroke-linecap="round"/>')
